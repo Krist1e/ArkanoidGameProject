@@ -40,8 +40,8 @@ namespace ArkanoidGameProject
             var block1 = new Block(new Vector2f(400f, 100f), 100, 50, Color.Red);
             var block2 = new Block(new Vector2f(500f, 100f), 100, 50, Color.Green);
             var block3 = new Block(new Vector2f(300f, 100f), 100, 50, Color.Cyan);
-            var ball = new Ball(10, new Vector2f(width / 2, height / 2), new Vector2f(0.0f, -3.0f));
-            var paddle = new Paddle(new Vector2f(width / 2, height / 2 + 20), 100, 10, Color.Blue);
+            var ball = new Ball(10, new Vector2f(width / 2, height / 2 + 190), new Vector2f(0.0f, -3.0f));
+            var paddle = new Paddle(new Vector2f(width / 2, height / 2 + 200), 100, 10, Color.Blue);
             field.Add(ball);
             field.Add(block1);
             field.Add(block2);

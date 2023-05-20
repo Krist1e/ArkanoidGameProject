@@ -1,5 +1,4 @@
-﻿using ArkanoidGameProject.Collision;
-using ArkanoidGameProject.GameObjects;
+﻿using ArkanoidGameProject.GameObjects;
 using SFML.Graphics;
 using SFML.System;
 
@@ -34,25 +33,25 @@ namespace ArkanoidGameProject
         {
             Vector2f normal = new Vector2f(0.0f, 0.0f);
             float penetration = 0;
-            if (obj.Bounds.LeftTop.X <= 0)
+            if (obj.LeftTop.X <= 0)
             {
                 normal = new Vector2f(1.0f, 0.0f);
-                penetration = -obj.Bounds.LeftTop.X;
+                penetration = -obj.LeftTop.X;
             }
-            else if (obj.Bounds.RightBottom.X >= Width)
+            else if (obj.RightBottom.X >= Width)
             {
                 normal = new Vector2f(-1.0f, 0.0f);
-                penetration = obj.Bounds.RightBottom.X - Width;
+                penetration = obj.RightBottom.X - Width;
             }
-            else if (obj.Bounds.LeftTop.Y <= 0)
+            else if (obj.LeftTop.Y <= 0)
             {
                 normal = new Vector2f(0.0f, 1.0f);
-                penetration = -obj.Bounds.LeftTop.Y;
+                penetration = -obj.LeftTop.Y;
             }
-            else if (obj.Bounds.RightBottom.Y >= Height)
+            else if (obj.RightBottom.Y >= Height)
             {
                 normal = new Vector2f(0.0f, -1.0f);
-                penetration = obj.Bounds.RightBottom.Y - Height;
+                penetration = obj.RightBottom.Y - Height;
             }
 
             if (normal == default)

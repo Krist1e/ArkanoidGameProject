@@ -1,5 +1,4 @@
-﻿using ArkanoidGameProject.Collision;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
 
 namespace ArkanoidGameProject.GameObjects
@@ -13,10 +12,12 @@ namespace ArkanoidGameProject.GameObjects
             set
             {
                 _radius = value;
-                Shape.Origin = new Vector2f(Radius, Radius);
+                Shape.Origin = new Vector2f(_radius, _radius);
                 Shape.Radius = _radius;
+                Size = new Vector2f(_radius * 2, _radius * 2);
             }
         }
+        
         public new Vector2f Position
         {
             get => base.Position;
@@ -44,8 +45,7 @@ namespace ArkanoidGameProject.GameObjects
         private Color _color;
         public Ball(float radius, Vector2f position, Vector2f velocity)
         {
-            Shape = new CircleShape(radius);
-            Bounds = new Bounds(position, new Vector2f(radius * 2, radius * 2));
+            Shape = new CircleShape(radius);               
             Radius = radius;
             Color = Color.Yellow;
             Position = position;

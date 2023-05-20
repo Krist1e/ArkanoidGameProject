@@ -1,20 +1,18 @@
-﻿using ArkanoidGameProject.Collision;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
 
 namespace ArkanoidGameProject.GameObjects
 {
     internal class Block : GameObject
     {
-        private Vector2f _size;
-        public Vector2f Size
+        public new Vector2f Size
         {
-            get => _size;
+            get => base.Size;
             set
             {
-                _size = value;
-                Shape.Origin = _size / 2;
-                Shape.Size = _size;
+                base.Size = value;
+                Shape.Origin = Size / 2;
+                Shape.Size = Size;
             }
         }
 
@@ -47,7 +45,6 @@ namespace ArkanoidGameProject.GameObjects
         public Block(Vector2f position, float width, float height, Color color)
         {
             Shape = new RectangleShape(new Vector2f(width, height));
-            Bounds = new Bounds(position, new Vector2f(width, height));
             Size = new Vector2f(width, height);
             Position = position;
             Color = color;
@@ -77,6 +74,6 @@ namespace ArkanoidGameProject.GameObjects
 
         public override void OnWallCollision(CollisionArgs? args)
         {
-        }
+        }        
     }
 }
