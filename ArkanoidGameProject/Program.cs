@@ -1,11 +1,10 @@
-﻿namespace ArkanoidGameProject
+﻿namespace ArkanoidGameProject;
+
+internal static class Program
 {
-    internal class Program
+    private static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Game game = new Game(800, 600, 60);
-            game.Start();
-        }
+        Game game = new Game(1280, 720, 60);
+        game.Start();
     }
 }

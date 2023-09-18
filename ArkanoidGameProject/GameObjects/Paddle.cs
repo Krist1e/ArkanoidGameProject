@@ -1,82 +1,115 @@
-﻿using SFML.Graphics;
+﻿using ArkanoidGameProject.Input;
+using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
 
 namespace ArkanoidGameProject.GameObjects
 {
-    internal class Paddle : GameObject
+    public class Paddle : DisplayObject
     {
-        public new Vector2f Position
+        private readonly RectangleShape _shape;
+        private Color _color;
+        private Ball? _ball;
+        private Vector2f _velocity;
+
+        public Paddle(Vector2f position, float width, float height, Color color, float speed)
         {
-            get => base.Position;
+            _shape = new RectangleShape(new Vector2f(width, height));
+            Size = new Vector2f(width, height);
+            Position = position;
+            Color = color;
+            Speed = speed;
+        }
+
+        public Paddle()
+        {
+            _shape = new RectangleShape();
+        }
+
+        public float Speed { get; set; }
+
+        public Ball? Ball
+        {
+            get => _ball;
             set
             {
-                base.Position = value;
-                Shape.Position = value;
+                _ball = value;
+                if (_ball == null) return;
+                BindBall();
             }
         }
 
-        public RectangleShape Shape { get; set; }
-
-        public new Vector2f Size
+        public Color Color
         {
-            get => base.Size;
+            get => _color;
             set
             {
-                base.Size = value;
-                Shape.Origin = Size / 2;
-                Shape.Size = Size;
+                _color = value;
+                _shape.FillColor = _color;
             }
-        }   
-        public Color Color { get; set; }
-        public Paddle(Vector2f position, float width, float height, Color color)
-        {
-            Shape = new RectangleShape(new Vector2f(width, height));
-            Size = new Vector2f(width, height);
-            Position = position;
-            Color = color;            
-            Shape.Position = Position;
-            Shape.FillColor = Color;            
-            IsStatic = true;
         }
 
         public override void Draw(RenderWindow window)
         {
-            window.Draw(Shape);
+            window.Draw(_shape);
         }
 
-        public void MoveLeft(float deltaTime)
+
+        public void MoveLeft(float amount)
         {
-            Position -= new Vector2f(10 * deltaTime, 0);
-            Shape.Position = Position;
+            _velocity += new Vector2f(-amount * Speed, 0);
         }
 
-        public void MoveRight(float deltaTime)
+        public void MoveRight(float amount)
         {
-            Position += new Vector2f(10 * deltaTime, 0);
-            Shape.Position = Position;
+            _velocity += new Vector2f(amount * Speed, 0);
         }
 
+        public void BindBall()
+        {
+            if (Ball == null) return;
+            Ball.IsEnabled = false;
+            Ball.IsStatic = true;
+            Ball.Position = Position + new Vector2f(0, -Ball.Radius - Size.Y / 2f);
+        }
+
+        public void ReleaseBall(int launchSpeed)
+        {
+            if (Ball == null) return;
+            Ball.IsEnabled = true;
+            Ball.IsStatic = false;
+            Ball.Velocity = new Vector2f(0, -1) * launchSpeed;
+            Ball = null;
+        }
         public override void Move(float deltaTime)
         {
-            if (Keyboard.IsKeyPressed(Keyboard.Key.Left))
-            {
-                this.MoveLeft(deltaTime);
-            } 
-            else if (Keyboard.IsKeyPressed(Keyboard.Key.Right))
-            {
-                this.MoveRight(deltaTime);
-            }             
+            Position += _velocity * deltaTime;
+            _velocity = new Vector2f(0, 0);
+            if (Ball != null) Ball.Position = Position + new Vector2f(0, -Ball.Radius - Size.Y / 2f);
         }
 
-        public override void OnCollision(GameObject obj, CollisionArgs? args)
+        public override void OnCollision(DisplayObject obj, CollisionArgs args)
         {
-            
+
         }
 
-        public override void OnWallCollision(CollisionArgs? args)
+        public override void OnWallCollision(CollisionArgs args)
         {
+            Position += args.Normal * args.Penetration;
+        }
+
+        protected override void OnPositionChanged()
+        {
+            base.OnPositionChanged();
+            _shape.Position = Position;
+        }
+
+        protected override void OnSizeChanged()
+        {
+            base.OnSizeChanged();
+            _shape.Origin = Size / 2;
+            _shape.Size = Size;
         }
     }
 }

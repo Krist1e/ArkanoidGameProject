@@ -1,66 +1,64 @@
-﻿using SFML.Graphics;
+﻿using ArkanoidGameProject.Bonuses;
+using SFML.Graphics;
 using SFML.System;
-
 namespace ArkanoidGameProject.GameObjects
 {
-    internal class Block : GameObject
+    public class Block : DisplayObject
     {
-        public new Vector2f Size
+        private readonly RectangleShape _shape;
+        private Color _color;
+        private List<Bonus> _bonuses = new();
+
+        public Block(Vector2f position, Vector2f size)
         {
-            get => base.Size;
-            set
-            {
-                base.Size = value;
-                Shape.Origin = Size / 2;
-                Shape.Size = Size;
-            }
+            _shape = new RectangleShape(size);
+            Size = size;
+            Position = position;
+            IsStatic = true;
+        }
+        
+        public Block()
+        {
+            _shape = new RectangleShape();
+            IsStatic = true;
         }
 
-        public new Vector2f Position
-        {
-            get => base.Position;
-            set
-            {
-                base.Position = value;
-                Shape.Position = value;
-            }
-        }
-        public RectangleShape Shape { get; set; }
+        public int Strength { get; set; } = 4;
+
         public Color Color
         {
-            get
-            {
-                return _color;
-            }
+            get => _color;
             set
             {
                 _color = value;
-                Shape.FillColor = _color;
+                _shape.FillColor = _color;
             }
         }
-        public int Strength { get; set; } = 4;
-
-        private Color _color;
-
-        public Block(Vector2f position, float width, float height, Color color)
+        
+        public IEnumerable<Bonus> Bonuses 
         {
-            Shape = new RectangleShape(new Vector2f(width, height));
-            Size = new Vector2f(width, height);
-            Position = position;
-            Color = color;
-            IsStatic = true;
+            get => _bonuses;
+            set
+            {
+                _bonuses = value.ToList();
+                Color = MixColors(_bonuses);
+            }
         }
 
         public override void Draw(RenderWindow window)
         {
-            window.Draw(Shape);
+            window.Draw(_shape);
         }
 
         public override void Move(float deltaTime)
         {
         }
 
-        public override void OnCollision(GameObject obj, CollisionArgs? args)
+        public override void OnCollision(DisplayObject obj, CollisionArgs args)
+        {
+        }
+
+        public override void OnWallCollision(CollisionArgs args)
         {
         }
 
@@ -72,8 +70,22 @@ namespace ArkanoidGameProject.GameObjects
             Color = new Color(Color.R, Color.G, Color.B, (byte)(Strength * 40));
         }
 
-        public override void OnWallCollision(CollisionArgs? args)
+        protected override void OnPositionChanged()
         {
-        }        
+            base.OnPositionChanged();
+            _shape.Position = Position;
+        }
+
+        protected override void OnSizeChanged()
+        {
+            base.OnSizeChanged();
+            _shape.Origin = Size / 2;
+            _shape.Size = Size;
+        }
+        
+        private Color MixColors(IEnumerable<Bonus> bonuses)
+        {
+            return bonuses.Aggregate(Color.White, (current, bonus) => current * bonus.Color);
+        }
     }
 }
